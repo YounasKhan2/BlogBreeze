@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Django Blog{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Welcome to Django Blog</h1>
+        
+        {% if user.is_authenticated %}
+            <div class="alert alert-info">
+                <h4>Hello, {{ user.username }}!</h4>
+                <p>You are logged in as a <strong>{{ user.profile.get_role_display }}</strong>.</p>
+                <p class="mb-0">Blog posts will be displayed here once implemented.</p>
+            </div>
+        {% else %}
+            <div class="alert alert-secondary">
+                <h4>Welcome, Guest!</h4>
+                <p>Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'register' %}">register</a> to access all features.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
