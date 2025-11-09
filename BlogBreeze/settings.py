@@ -28,6 +28,11 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
 
+# Render.com specific settings
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 
 # Application definition
 
@@ -48,6 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -82,7 +88,16 @@ WSGI_APPLICATION = 'BlogBreeze.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Use PostgreSQL in production, SQLite in development
-if os.environ.get('DB_NAME'):
+if os.environ.get('DATABASE_URL'):
+    # Render.com provides DATABASE_URL
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600
+        )
+    }
+elif os.environ.get('DB_NAME'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -142,6 +157,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# WhiteNoise configuration for static files
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (User-uploaded content)
 MEDIA_URL = '/media/'

@@ -209,6 +209,24 @@ Use the search bar in the navigation menu to search for posts by title or conten
 
 ## Deployment
 
+### 🚀 Deploy to Render.com (FREE - Recommended)
+
+**Ready to deploy?** 
+
+👉 **[START_HERE.md](START_HERE.md)** - Choose your deployment path
+
+**Quick Links:**
+- ⚡ [5-Minute Quick Deploy](RENDER_QUICKSTART.md)
+- 📚 [Detailed Deployment Guide](RENDER_DEPLOYMENT.md)
+- ✅ [Deployment Checklist](DEPLOYMENT_CHECKLIST.md)
+
+**Why Render?**
+- ✅ Free tier (no credit card required)
+- ✅ Automatic HTTPS & SSL
+- ✅ PostgreSQL database included
+- ✅ Auto-deploy from GitHub
+- ✅ Easy setup (5 minutes)
+
 ### Deploying to Appwrite
 
 1. **Prepare for deployment**
