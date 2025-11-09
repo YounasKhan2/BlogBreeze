@@ -8,9 +8,9 @@ class Command(BaseCommand):
     help = 'Create a superuser from environment variables'
 
     def handle(self, *args, **options):
-        username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'younas')
-        email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'younaskk120@gmail.com')
-        password = os.environ.get('2936667younasKK*')
+        username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin')
+        email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')
+        password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
         
         if not password:
             self.stdout.write(self.style.ERROR('DJANGO_SUPERUSER_PASSWORD environment variable is required'))
