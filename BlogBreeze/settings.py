@@ -163,22 +163,24 @@ STATICFILES_DIRS = [
 # WhiteNoise configuration for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Cloudinary Configuration for Media Files
+"""
+Media storage configuration
+
+Always use Cloudinary in both development and production. Ensure the following
+environment variables are set: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY,
+CLOUDINARY_API_SECRET. No local filesystem fallback is configured.
+"""
+
+# Base Cloudinary settings (read from environment)
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
 
-# Use Cloudinary for media storage in production, local storage in development
-if DEBUG:
-    # Local media storage for development
-    MEDIA_ROOT = BASE_DIR / 'media'
-    MEDIA_URL = '/media/'
-else:
-    # Use Cloudinary for media storage in production
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-    MEDIA_URL = '/media/'
+# Store media on Cloudinary; MEDIA_URL is only used in templates for consistency
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -194,9 +196,8 @@ LOGOUT_REDIRECT_URL = 'blog:post_list'
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 
-# Use Cloudinary for CKEditor uploads in production
-if not DEBUG:
-    CKEDITOR_STORAGE_BACKEND = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# Use Cloudinary for CKEditor uploads
+CKEDITOR_STORAGE_BACKEND = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CKEDITOR_CONFIGS = {
     'default': {
