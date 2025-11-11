@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # Local apps
     'blog.apps.BlogConfig',
     'accounts',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +64,20 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'BlogBreeze.urls'
+
+# Azure App Service specific settings (must be before templates usage but after ALLOWED_HOSTS defined)
+WEBSITE_HOSTNAME = os.environ.get('WEBSITE_HOSTNAME')
+if WEBSITE_HOSTNAME:
+    # e.g., myapp.azurewebsites.net
+    ALLOWED_HOSTS.append(WEBSITE_HOSTNAME)
+
+csrf_trusted = os.environ.get('CSRF_TRUSTED_ORIGINS')
+if csrf_trusted:
+    # Comma-separated list, e.g., https://myapp.azurewebsites.net,https://www.example.com
+    CSRF_TRUSTED_ORIGINS = [o.strip() for o in csrf_trusted.split(',') if o.strip()]
+elif WEBSITE_HOSTNAME:
+    # Trust the default Azure hostname when available
+    CSRF_TRUSTED_ORIGINS = [f"https://{WEBSITE_HOSTNAME}"]
 
 TEMPLATES = [
     {
@@ -164,6 +179,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Media files (User-uploaded content)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Azure Blob Storage for media (optional)
+# If AZURE_ACCOUNT_NAME and AZURE_CONTAINER are present, use Azure Blob for media files
+if os.environ.get('AZURE_ACCOUNT_NAME') and os.environ.get('AZURE_CONTAINER'):
+    DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+    AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
+    AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
+    AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER', 'media')
+    # Optional: use connection string if provided
+    AZURE_CONNECTION_STRING = os.environ.get('AZURE_STORAGE_CONNECTION_STRING')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

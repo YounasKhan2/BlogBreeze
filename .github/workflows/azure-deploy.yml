@@ -1,0 +1,53 @@
+name: Azure Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'AZD environment name (e.g., dev, prod)'
+        required: true
+        default: 'prod'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install azd
+        uses: Azure/setup-azd@v2
+
+      - name: Azure login
+        uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Initialize env
+        shell: bash
+        run: |
+          azd env new ${{ github.event.inputs.environment }} --no-prompt || azd env select ${{ github.event.inputs.environment }}
+          # Provide required parameters to Bicep via azd env config
+          if [ -n "${{ secrets.DJANGO_SECRET_KEY }}" ]; then
+            azd env set secretKey "${{ secrets.DJANGO_SECRET_KEY }}" --secret
+          fi
+          if [ -n "${{ vars.POSTGRES_ADMIN_USER }}" ]; then
+            azd env set postgresAdminUser "${{ vars.POSTGRES_ADMIN_USER }}"
+          else
+            azd env set postgresAdminUser "pgadmin"
+          fi
+          if [ -n "${{ secrets.POSTGRES_PASSWORD }}" ]; then
+            azd env set postgresAdminPassword "${{ secrets.POSTGRES_PASSWORD }}" --secret
+          fi
+
+      - name: Provision and Deploy with azd
+        shell: bash
+        run: |
+          azd up --no-prompt --environment ${{ github.event.inputs.environment }}

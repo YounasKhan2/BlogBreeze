@@ -1,0 +1,21 @@
+name: blogbreeze
+metadata:
+  template: blogbreeze-django-appservice
+
+services:
+  web:
+    project: .
+    host: appservice
+    language: python
+    hooks:
+      predeploy:
+        shell: sh
+        run: python manage.py collectstatic --noinput
+      postdeploy:
+        shell: sh
+        run: python manage.py migrate --noinput
+
+infra:
+  provider: bicep
+  path: infra
+  module: main.bicep
