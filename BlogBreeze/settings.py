@@ -104,13 +104,27 @@ WSGI_APPLICATION = 'BlogBreeze.wsgi.application'
 
 # Use PostgreSQL in production, SQLite in development
 if os.environ.get('DATABASE_URL'):
-    # Render.com provides DATABASE_URL
+    # Prefer DATABASE_URL when provided
     import dj_database_url
     DATABASES = {
         'default': dj_database_url.config(
             default=os.environ.get('DATABASE_URL'),
             conn_max_age=600
         )
+    }
+elif os.environ.get('AZURE_POSTGRESQL_HOST'):
+    # Fallback to Azure-style split Postgres vars commonly set in App Service
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('AZURE_POSTGRESQL_DATABASE'),
+            'USER': os.environ.get('AZURE_POSTGRESQL_USER'),
+            'PASSWORD': os.environ.get('AZURE_POSTGRESQL_PASSWORD'),
+            'HOST': os.environ.get('AZURE_POSTGRESQL_HOST'),
+            'PORT': os.environ.get('AZURE_POSTGRESQL_PORT', '5432'),
+            # Enforce SSL if indicated
+            'OPTIONS': {'sslmode': 'require'} if os.environ.get('AZURE_POSTGRESQL_SSL', 'true').lower() in ('1', 'true', 'yes') else {},
+        }
     }
 elif os.environ.get('DB_NAME'):
     DATABASES = {
@@ -181,14 +195,16 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Azure Blob Storage for media (optional)
-# If AZURE_ACCOUNT_NAME and AZURE_CONTAINER are present, use Azure Blob for media files
-if os.environ.get('AZURE_ACCOUNT_NAME') and os.environ.get('AZURE_CONTAINER'):
+# If AZURE_ACCOUNT_NAME and AZURE_MEDIA_CONTAINER/AZURE_CONTAINER are present, use Azure Blob for media files
+if os.environ.get('AZURE_ACCOUNT_NAME') and (os.environ.get('AZURE_MEDIA_CONTAINER') or os.environ.get('AZURE_CONTAINER')):
     DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
     AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
     AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
-    AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER', 'media')
+    AZURE_CONTAINER = os.environ.get('AZURE_MEDIA_CONTAINER') or os.environ.get('AZURE_CONTAINER') or 'media'
     # Optional: use connection string if provided
     AZURE_CONNECTION_STRING = os.environ.get('AZURE_STORAGE_CONNECTION_STRING')
+    # Public URL for blobs
+    MEDIA_URL = f"https://{AZURE_ACCOUNT_NAME}.blob.core.windows.net/{AZURE_CONTAINER}/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
