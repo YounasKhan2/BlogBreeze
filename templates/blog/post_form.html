@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {% if post %}Edit Post{% else %}Create New Post{% endif %} - BlogBreeze
+{% if post %}Edit Post{% else %}Create New Post{% endif %} - BlogBreeze
 {% endblock %}
 
 {% block extra_head %}
 <!-- TinyMCE Rich Text Editor -->
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/8vh63teynfxsrhc8yf4myxonsei4pn9fg2p6gz62z5x2ld8g/tinymce/8/tinymce.min.js"
+    referrerpolicy="origin" crossorigin="anonymous"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         tinymce.init({
             selector: '#id_content',
             height: 500,
@@ -27,33 +28,41 @@
             promotion: false,
             block_formats: 'Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4; Heading 5=h5; Heading 6=h6; Preformatted=pre',
             style_formats: [
-                { title: 'Headings', items: [
-                    { title: 'Heading 1', format: 'h1' },
-                    { title: 'Heading 2', format: 'h2' },
-                    { title: 'Heading 3', format: 'h3' },
-                    { title: 'Heading 4', format: 'h4' },
-                    { title: 'Heading 5', format: 'h5' },
-                    { title: 'Heading 6', format: 'h6' }
-                ]},
-                { title: 'Inline', items: [
-                    { title: 'Bold', format: 'bold' },
-                    { title: 'Italic', format: 'italic' },
-                    { title: 'Underline', format: 'underline' },
-                    { title: 'Strikethrough', format: 'strikethrough' },
-                    { title: 'Code', format: 'code' }
-                ]},
-                { title: 'Blocks', items: [
-                    { title: 'Paragraph', format: 'p' },
-                    { title: 'Blockquote', format: 'blockquote' },
-                    { title: 'Div', format: 'div' },
-                    { title: 'Pre', format: 'pre' }
-                ]},
-                { title: 'Align', items: [
-                    { title: 'Left', format: 'alignleft' },
-                    { title: 'Center', format: 'aligncenter' },
-                    { title: 'Right', format: 'alignright' },
-                    { title: 'Justify', format: 'alignjustify' }
-                ]}
+                {
+                    title: 'Headings', items: [
+                        { title: 'Heading 1', format: 'h1' },
+                        { title: 'Heading 2', format: 'h2' },
+                        { title: 'Heading 3', format: 'h3' },
+                        { title: 'Heading 4', format: 'h4' },
+                        { title: 'Heading 5', format: 'h5' },
+                        { title: 'Heading 6', format: 'h6' }
+                    ]
+                },
+                {
+                    title: 'Inline', items: [
+                        { title: 'Bold', format: 'bold' },
+                        { title: 'Italic', format: 'italic' },
+                        { title: 'Underline', format: 'underline' },
+                        { title: 'Strikethrough', format: 'strikethrough' },
+                        { title: 'Code', format: 'code' }
+                    ]
+                },
+                {
+                    title: 'Blocks', items: [
+                        { title: 'Paragraph', format: 'p' },
+                        { title: 'Blockquote', format: 'blockquote' },
+                        { title: 'Div', format: 'div' },
+                        { title: 'Pre', format: 'pre' }
+                    ]
+                },
+                {
+                    title: 'Align', items: [
+                        { title: 'Left', format: 'alignleft' },
+                        { title: 'Center', format: 'aligncenter' },
+                        { title: 'Right', format: 'alignright' },
+                        { title: 'Justify', format: 'alignjustify' }
+                    ]
+                }
             ]
         });
     });
@@ -64,148 +73,167 @@
 <main class="flex-1">
     <div class="container mx-auto max-w-4xl px-4 py-8 md:py-12">
         <!-- Back Button -->
-        <a href="{% if post %}{% url 'blog:post_detail' post.slug %}{% else %}{% url 'blog:post_list' %}{% endif %}" 
-           class="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-6">
+        <a href="{% if post %}{% url 'blog:post_detail' post.slug %}{% else %}{% url 'blog:post_list' %}{% endif %}"
+            class="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-6">
             <span class="material-symbols-outlined text-xl">arrow_back</span>
             <span class="text-sm font-medium">Back</span>
         </a>
 
         <!-- Form Card -->
-        <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg border border-border-light dark:border-border-dark p-8">
+        <div
+            class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg border border-border-light dark:border-border-dark p-8">
             <h1 class="text-3xl font-black mb-6 text-text-light dark:text-text-dark flex items-center gap-3">
                 {% if post %}
-                    <span class="material-symbols-outlined text-4xl">edit</span>
-                    Edit Post
+                <span class="material-symbols-outlined text-4xl">edit</span>
+                Edit Post
                 {% else %}
-                    <span class="material-symbols-outlined text-4xl">add_circle</span>
-                    Create New Post
+                <span class="material-symbols-outlined text-4xl">add_circle</span>
+                Create New Post
                 {% endif %}
             </h1>
 
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
-                
+
                 {% if form.non_field_errors %}
-                    <div class="mb-6 p-4 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800" role="alert">
-                        {{ form.non_field_errors }}
-                    </div>
+                <div class="mb-6 p-4 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800"
+                    role="alert">
+                    {{ form.non_field_errors }}
+                </div>
                 {% endif %}
-                
+
                 <!-- Title Field -->
                 <div class="mb-6">
-                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
+                    <label for="{{ form.title.id_for_label }}"
+                        class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
                         {{ form.title.label }}
                         <span class="text-red-600">*</span>
                     </label>
                     {{ form.title }}
                     {% if form.title.help_text %}
-                        <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ form.title.help_text }}</div>
+                    <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{
+                        form.title.help_text }}</div>
                     {% endif %}
                     {% if form.title.errors %}
-                        <div class="mt-2 text-sm text-red-600">
-                            {{ form.title.errors }}
-                        </div>
+                    <div class="mt-2 text-sm text-red-600">
+                        {{ form.title.errors }}
+                    </div>
                     {% endif %}
                 </div>
-                
+
                 <!-- Content Field -->
                 <div class="mb-6">
-                    <label for="{{ form.content.id_for_label }}" class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
+                    <label for="{{ form.content.id_for_label }}"
+                        class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
                         {{ form.content.label }}
                         <span class="text-red-600">*</span>
                     </label>
                     {{ form.content }}
                     {% if form.content.help_text %}
-                        <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ form.content.help_text }}</div>
+                    <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{
+                        form.content.help_text }}</div>
                     {% endif %}
                     {% if form.content.errors %}
-                        <div class="mt-2 text-sm text-red-600">
-                            {{ form.content.errors }}
-                        </div>
+                    <div class="mt-2 text-sm text-red-600">
+                        {{ form.content.errors }}
+                    </div>
                     {% endif %}
                 </div>
-                
+
                 <!-- Category Field -->
                 <div class="mb-6">
-                    <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
+                    <label for="{{ form.category.id_for_label }}"
+                        class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
                         {{ form.category.label }}
                         <span class="text-red-600">*</span>
                     </label>
                     {{ form.category }}
                     {% if form.category.help_text %}
-                        <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ form.category.help_text }}</div>
+                    <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{
+                        form.category.help_text }}</div>
                     {% endif %}
                     {% if form.category.errors %}
-                        <div class="mt-2 text-sm text-red-600">
-                            {{ form.category.errors }}
-                        </div>
+                    <div class="mt-2 text-sm text-red-600">
+                        {{ form.category.errors }}
+                    </div>
                     {% endif %}
                 </div>
-                
+
                 <!-- Tags Field -->
                 <div class="mb-6">
-                    <label class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">{{ form.tags.label }}</label>
-                    <div class="p-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark">
+                    <label class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">{{ form.tags.label
+                        }}</label>
+                    <div
+                        class="p-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark">
                         {{ form.tags }}
                     </div>
                     {% if form.tags.help_text %}
-                        <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ form.tags.help_text }}</div>
+                    <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{
+                        form.tags.help_text }}</div>
                     {% endif %}
                     {% if form.tags.errors %}
-                        <div class="mt-2 text-sm text-red-600">
-                            {{ form.tags.errors }}
-                        </div>
+                    <div class="mt-2 text-sm text-red-600">
+                        {{ form.tags.errors }}
+                    </div>
                     {% endif %}
                 </div>
-                
+
                 <!-- Status Field -->
                 <div class="mb-6">
-                    <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
+                    <label for="{{ form.status.id_for_label }}"
+                        class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
                         {{ form.status.label }}
                         <span class="text-red-600">*</span>
                     </label>
                     {{ form.status }}
                     {% if form.status.help_text %}
-                        <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ form.status.help_text }}</div>
+                    <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{
+                        form.status.help_text }}</div>
                     {% endif %}
                     {% if form.status.errors %}
-                        <div class="mt-2 text-sm text-red-600">
-                            {{ form.status.errors }}
-                        </div>
+                    <div class="mt-2 text-sm text-red-600">
+                        {{ form.status.errors }}
+                    </div>
                     {% endif %}
                 </div>
-                
+
                 <!-- Featured Image Field -->
                 <div class="mb-6">
-                    <label for="{{ form.featured_image.id_for_label }}" class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
+                    <label for="{{ form.featured_image.id_for_label }}"
+                        class="block text-sm font-medium mb-2 text-text-light dark:text-text-dark">
                         {{ form.featured_image.label }}
                     </label>
                     {% if post and post.featured_image %}
-                        <div class="mb-4 p-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark">
-                            <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="rounded-lg max-w-xs">
-                            <p class="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">Current image (upload a new one to replace)</p>
-                        </div>
+                    <div
+                        class="mb-4 p-4 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark">
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="rounded-lg max-w-xs">
+                        <p class="mt-2 text-sm text-text-secondary-light dark:text-text-secondary-dark">Current image
+                            (upload a new one to replace)</p>
+                    </div>
                     {% endif %}
                     {{ form.featured_image }}
                     {% if form.featured_image.help_text %}
-                        <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{ form.featured_image.help_text }}</div>
+                    <div class="mt-1 text-sm text-text-secondary-light dark:text-text-secondary-dark">{{
+                        form.featured_image.help_text }}</div>
                     {% endif %}
                     {% if form.featured_image.errors %}
-                        <div class="mt-2 text-sm text-red-600">
-                            {{ form.featured_image.errors }}
-                        </div>
+                    <div class="mt-2 text-sm text-red-600">
+                        {{ form.featured_image.errors }}
+                    </div>
                     {% endif %}
                 </div>
-                
+
                 <!-- Form Actions -->
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-8 pt-6 border-t border-border-light dark:border-border-dark">
+                <div
+                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-8 pt-6 border-t border-border-light dark:border-border-dark">
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <button type="submit" class="flex items-center justify-center gap-2 rounded-lg h-12 px-5 bg-primary text-white text-base font-bold hover:bg-opacity-90 transition-opacity">
+                        <button type="submit"
+                            class="flex items-center justify-center gap-2 rounded-lg h-12 px-5 bg-primary text-white text-base font-bold hover:bg-opacity-90 transition-opacity">
                             <span class="material-symbols-outlined text-xl">check_circle</span>
                             {% if post %}Update Post{% else %}Create Post{% endif %}
                         </button>
-                        <a href="{% if post %}{% url 'blog:post_detail' post.slug %}{% else %}{% url 'blog:post_list' %}{% endif %}" 
-                           class="flex items-center justify-center gap-2 rounded-lg h-12 px-5 bg-gray-500 text-white text-base font-bold hover:bg-gray-600 transition-colors">
+                        <a href="{% if post %}{% url 'blog:post_detail' post.slug %}{% else %}{% url 'blog:post_list' %}{% endif %}"
+                            class="flex items-center justify-center gap-2 rounded-lg h-12 px-5 bg-gray-500 text-white text-base font-bold hover:bg-gray-600 transition-colors">
                             <span class="material-symbols-outlined text-xl">cancel</span>
                             Cancel
                         </a>
