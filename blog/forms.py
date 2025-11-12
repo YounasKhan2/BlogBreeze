@@ -1,6 +1,5 @@
 from django import forms
 from django.utils.text import slugify
-from ckeditor.widgets import CKEditorWidget
 from .models import Post, Comment
 
 
@@ -12,25 +11,28 @@ class PostForm(forms.ModelForm):
         fields = ['title', 'description', 'content', 'category', 'tags', 'status', 'featured_image']
         widgets = {
             'title': forms.TextInput(attrs={
-                'class': 'form-control',
+                'class': 'w-full px-4 py-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary',
                 'placeholder': 'Enter post title'
             }),
             'description': forms.Textarea(attrs={
-                'class': 'form-control',
+                'class': 'w-full px-4 py-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary',
                 'rows': 3,
                 'maxlength': 300,
                 'placeholder': 'Enter a short description (max 300 characters)'
             }),
-            'content': CKEditorWidget(),
+            'content': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary',
+                'rows': 10
+            }),
             'category': forms.Select(attrs={
-                'class': 'form-select'
+                'class': 'w-full px-4 py-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary'
             }),
             'tags': forms.CheckboxSelectMultiple(),
             'status': forms.Select(attrs={
-                'class': 'form-select'
+                'class': 'w-full px-4 py-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary'
             }),
             'featured_image': forms.FileInput(attrs={
-                'class': 'form-control',
+                'class': 'w-full px-4 py-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-primary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-opacity-90',
                 'accept': 'image/jpeg,image/png,image/gif'
             })
         }
